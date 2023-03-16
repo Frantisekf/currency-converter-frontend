@@ -1,0 +1,47 @@
+.card {
+    position: fixed;
+    bottom: 50px;
+    right: -390px;
+    width: 300px;
+    height: auto;
+    background: #ff6666;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3);
+    transition: transform 0.3s ease-out;
+    opacity: 98%;
+    border-radius: 10px;
+  }
+  
+  .card.show {
+    transform: translateX(-400px);
+  }
+  
+  .cardHeader {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+  }
+
+  .cardHeader h3 {
+    margin: 0;
+  }
+  
+  .cardBody {
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+  }
+  
+  .card p {
+    margin: 0;
+  }
+
+  .closeBtn {
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+    background-color: transparent;
+    border: none;
+  }

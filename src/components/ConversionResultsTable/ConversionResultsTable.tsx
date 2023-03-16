@@ -22,7 +22,7 @@ const ConversionResultsTable: React.FC<CurrencyTableProps> = ({ conversionEntrie
         <div className={styles.row}>
           <div className={styles.cell}>
             <SkeletonTheme baseColor="#202020" highlightColor="#444">
-              <Skeleton count={10} />
+              <Skeleton count={5} />
             </SkeletonTheme>
           </div>
         </div>

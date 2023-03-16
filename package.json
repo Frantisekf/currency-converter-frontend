@@ -1,7 +1,8 @@
 {
   "name": "currency-converter-frontend",
+  "author": "frantisekfarkas93@gmail.com",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -9,6 +10,7 @@
     "preview": "vite preview",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
+    "stylelint": "stylelint ./src",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'"
   },
   "dependencies": {
@@ -35,6 +37,8 @@
     "eslint-plugin-react": "^7.32.2",
     "node-sass": "^8.0.0",
     "prettier": "^2.8.4",
+    "stylelint": "^15.2.0",
+    "stylelint-config-standard": "^30.0.1",
     "typescript": "^4.9.5",
     "vite": "^4.1.0"
   }

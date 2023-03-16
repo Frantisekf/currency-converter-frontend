@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
+import ErrorCard from '../ErrorComponent/ErrorCard';
 import { fetchCurrencySymbols, convertCurrency, getAllConversionEntries } from '../../api/client';
 import {
   type CurrencySymbolsType,
@@ -9,6 +10,7 @@ import {
 } from '../../utils/types';
 import ConversionResultsTable from '../ConversionResultsTable/ConversionResultsTable';
 import styles from './ConverterApp.module.css';
+import cx from 'classnames';
 
 const ConverterApp: React.FC = () => {
   const [currencySymbols, setCurrencySymbols] = useState<CurrencyOption[]>([]);
@@ -18,6 +20,8 @@ const ConverterApp: React.FC = () => {
   const [conversionResult, setConversionResult] = useState<number | null>(null);
   const [conversionResultsTable, setConversionResultsTable] = useState<ConversionEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const [error, setError] = useState(null);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     const value = event.target.value;
@@ -51,6 +55,7 @@ const ConverterApp: React.FC = () => {
       setDestCurrency('');
     } catch (error) {
       console.error(error);
+      setError(error);
     }
   };
   const fetchCurrencyOptions = async (): Promise<void> => {
@@ -65,6 +70,7 @@ const ConverterApp: React.FC = () => {
       setCurrencySymbols(options);
     } catch (error) {
       console.error(error);
+      setError(error);
     }
   };
 
@@ -75,6 +81,7 @@ const ConverterApp: React.FC = () => {
       setConversionResultsTable(result.data as ConversionEntry[]);
     } catch (error) {
       console.error(error);
+      setError(error);
     } finally {
       setIsLoading(false);
     }
@@ -104,41 +111,46 @@ const ConverterApp: React.FC = () => {
   };
 
   return (
-    <div className={styles.root}>
-      <h1 className={styles.mainHeader}>Currency Converter</h1>
-      <div className={styles.converterInput}>
-        <input
-          type="number"
-          min={0}
-          value={amount ?? ''}
-          placeholder="insert amount"
-          onChange={handleAmountChange}></input>
-        <span>from:</span>
-        <Select
-          options={currencySymbols}
-          value={{ value: originCurrency, label: originCurrency }}
-          onChange={handleOriginCurrencyChange}
-          isSearchable={true}
-          styles={customStyles}
-          placeholder={'type/select currency'}></Select>
-        <span>to:</span>
-        <Select
-          value={{ value: destCurrency, label: destCurrency }}
-          options={currencySymbols}
-          styles={customStyles}
-          onChange={handleDestCurrencyChange}
-          isSearchable={true}
-          placeholder="type/select currency"></Select>
-        <button
-          onClick={() => handleSubmitConversion}
-          disabled={!amount || !originCurrency || !destCurrency}>
-          Convert
-        </button>
-      </div>
-      <div className={styles.conversionResult}>{conversionResult}Result </div>
+    <>
+      {error && <ErrorCard error={error} />}
+      <div className={styles.root}>
+        <h1 className={styles.mainHeader}>Currency Converter</h1>
+        <div className={styles.converterInput}>
+          <input
+            type="number"
+            min={0}
+            value={amount ?? ''}
+            placeholder="insert amount"
+            onChange={handleAmountChange}></input>
+          <span>from:</span>
+          <Select
+            options={currencySymbols}
+            value={{ value: originCurrency, label: originCurrency }}
+            onChange={handleOriginCurrencyChange}
+            isSearchable={true}
+            styles={customStyles}
+            placeholder={'type/select currency'}></Select>
+          <span>to:</span>
+          <Select
+            value={{ value: destCurrency, label: destCurrency }}
+            options={currencySymbols}
+            styles={customStyles}
+            onChange={handleDestCurrencyChange}
+            isSearchable={true}
+            placeholder="type/select currency"></Select>
+          <button
+            onClick={handleSubmitConversion}
+            disabled={amount == null || originCurrency === '' || destCurrency.length === 0}>
+            Convert
+          </button>
+        </div>
+        <div className={cx(styles.conversionResult, conversionResult != null ? '' : styles.hidden)}>
+          Conversion result: {conversionResult}
+        </div>
 
-      <ConversionResultsTable conversionEntries={conversionResultsTable} isLoading={isLoading} />
-    </div>
+        <ConversionResultsTable conversionEntries={conversionResultsTable} isLoading={isLoading} />
+      </div>
+    </>
   );
 };
 

@@ -23,7 +23,6 @@
   box-sizing: border-box;
   margin-bottom: 10px;
   vertical-align: middle;
-
 }
 
 .converterInput span {
@@ -40,4 +39,10 @@
 
 .conversionResult {
   margin-top: 6rem;
+  font-weight: bold;
+  font-size: 1.5rem
+}
+
+.hidden {
+  display: none;
 }
