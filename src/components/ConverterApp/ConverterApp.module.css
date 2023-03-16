@@ -1,0 +1,43 @@
+.root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.mainHeader {
+  margin-bottom: 4rem;
+}
+
+.converterInput {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.converterInput input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-bottom: 10px;
+  vertical-align: middle;
+
+}
+
+.converterInput span {
+  text-align: center;
+  vertical-align: middle;
+  line-height: 40px;
+  margin: 0 1rem;
+  font-weight: bold;
+}
+
+.converterInput button {
+  margin-left: 1rem;
+}
+
+.conversionResult {
+  margin-top: 6rem;
+}

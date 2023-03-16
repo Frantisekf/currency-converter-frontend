@@ -1,0 +1,33 @@
+.table {
+    border-radius: 3px;
+    padding: 25px 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-bottom: 25px;
+    margin-top: 40vh
+  }
+  
+  .row {
+    display: flex;
+    flex-direction: row;
+    background-color: #ffffff;
+    box-shadow: 0px 0px 4px 0px rgba(0,0,0,0.1);
+
+    	
+	&:nth-of-type(odd) {
+		background-color: #EEEEEE;
+	}
+  }
+  
+  .header {
+    background-color: #95A5A6;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  
+  .cell {
+    padding: 8px;
+    flex: 1;
+  }
