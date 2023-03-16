@@ -139,6 +139,7 @@ const ConverterApp: React.FC = () => {
             isSearchable={true}
             placeholder="type/select currency"></Select>
           <button
+            // eslint-disable-next-line @typescript-eslint/no-misused-promises
             onClick={handleSubmitConversion}
             disabled={amount == null || originCurrency === '' || destCurrency.length === 0}>
             Convert

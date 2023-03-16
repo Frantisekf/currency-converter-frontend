@@ -11,6 +11,7 @@
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src --fix",
     "stylelint": "stylelint ./src",
+    "stylelint:fix": "stylelint ./src --fix",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'"
   },
   "dependencies": {
@@ -19,7 +20,8 @@
     "react-dom": "^18.2.0",
     "react-loading-skeleton": "^3.2.0",
     "react-select": "^5.7.0",
-    "sass": "^1.59.2"
+    "sass": "^1.59.2",
+    "stylelint-config-css-modules": "^4.2.0"
   },
   "devDependencies": {
     "@types/node-sass": "^4.11.3",
