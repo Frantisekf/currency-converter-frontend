@@ -12,7 +12,8 @@
     "lint:fix": "eslint ./src --fix",
     "stylelint": "stylelint ./src",
     "stylelint:fix": "stylelint ./src --fix",
-    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'"
+    "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}'",
+    "prepare": "husky install"
   },
   "dependencies": {
     "classnames": "^2.3.2",
@@ -36,10 +37,16 @@
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.32.2",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.0",
     "prettier": "^2.8.4",
     "stylelint": "^15.2.0",
     "stylelint-config-standard": "^30.0.1",
     "typescript": "^4.9.5",
     "vite": "^4.1.0"
+  },
+  "lint-staged": {
+    "*.js": "eslint --fix ",
+    "*.{js,css,md,html,json}": "prettier --cache --write"
   }
 }
