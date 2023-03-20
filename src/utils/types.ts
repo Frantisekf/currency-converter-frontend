@@ -3,7 +3,7 @@ export interface ConversionApiResponse {
 }
 
 export interface MoneyType {
-  amount: number | null;
+  amount: string | null;
   from: string;
   to: string;
 }
@@ -17,10 +17,10 @@ export interface CurrencyOption {
 
 export interface ConversionEntry {
   id: string;
-  originalAmount: number | null;
+  originalAmount: string | null;
   from: string;
   to: string;
-  destAmount: number | null;
+  destAmount: string | null;
   createdAt: string;
 }
 

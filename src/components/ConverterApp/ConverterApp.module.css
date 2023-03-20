@@ -3,6 +3,7 @@
   margin: 0 auto;
   padding: 2rem;
   text-align: center;
+  
 }
 
 .mainHeader {
@@ -37,6 +38,9 @@
   margin-left: 1rem;
   height: 38px;
 }
+
+.converterInput button:focus { outline: none !important; box-shadow: none !important; }
+
 
 .conversionResult {
   margin-top: 6rem;

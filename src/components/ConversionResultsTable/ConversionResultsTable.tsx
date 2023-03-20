@@ -3,10 +3,7 @@ import { type CurrencyTableProps } from '../../utils/types';
 import styles from './ConversionResultsTable.module.css';
 import cx from 'classnames';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-
-const ISOStringToDate = (ISOString: string): string => {
-  return new Date(ISOString).toLocaleString();
-};
+import { ISOStringToDate } from '../../utils/helpers';
 
 const ConversionResultsTable: React.FC<CurrencyTableProps> = ({ conversionEntries, isLoading }) => {
   if (isLoading || conversionEntries.length === 0) {

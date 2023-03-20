@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Select from 'react-select';
 import ErrorCard from '../ErrorComponent/ErrorCard';
+import Loader from '../Loader/Loader';
 import { fetchCurrencySymbols, convertCurrency, getAllConversionEntries } from '../../api/client';
 import {
   type CurrencySymbolsType,
@@ -11,6 +12,7 @@ import {
 import ConversionResultsTable from '../ConversionResultsTable/ConversionResultsTable';
 import styles from './ConverterApp.module.css';
 import cx from 'classnames';
+import { findMostCommonPropertyValue } from '../../utils/helpers';
 
 const ConverterApp: React.FC = () => {
   const [currencySymbols, setCurrencySymbols] = useState<CurrencyOption[]>([]);
@@ -20,7 +22,9 @@ const ConverterApp: React.FC = () => {
   const [conversionResult, setConversionResult] = useState<number | null>(null);
   const [conversionResultsTable, setConversionResultsTable] = useState<ConversionEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [mostPopularDestCurrency, setMostPopularDestCurrency] = useState<string>('');
 
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState(null);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -42,6 +46,7 @@ const ConverterApp: React.FC = () => {
   };
 
   const handleSubmitConversion = async (): Promise<void> => {
+    setLoading(true);
     try {
       const result: ConversionApiResponse = await convertCurrency({
         amount,
@@ -53,9 +58,10 @@ const ConverterApp: React.FC = () => {
       setAmount(null);
       setOriginCurrency('');
       setDestCurrency('');
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
       setError(error);
+    } finally {
+      setLoading(false);
     }
   };
   const fetchCurrencyOptions = async (): Promise<void> => {
@@ -68,22 +74,17 @@ const ConverterApp: React.FC = () => {
         })
       );
       setCurrencySymbols(options);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
       setError(error);
     }
   };
 
   const populateConversionTable = async (): Promise<void> => {
     try {
-      setIsLoading(true);
       const result = await getAllConversionEntries();
       setConversionResultsTable(result.data as ConversionEntry[]);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
       setError(error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -95,12 +96,16 @@ const ConverterApp: React.FC = () => {
     void populateConversionTable();
   }, [conversionResult]);
 
+  useEffect(() => {
+    setMostPopularDestCurrency(findMostCommonPropertyValue(conversionResultsTable, 'to'));
+  }, [conversionResultsTable]);
+
   // custom styles for react-select
   const customStyles = {
     control: (base: any) => ({
       ...base,
       width: '230px',
-      minWidth: '230'
+      minWidth: 'auto'
     }),
 
     placeholder: (base: any) => ({
@@ -126,6 +131,7 @@ const ConverterApp: React.FC = () => {
           <Select
             options={currencySymbols}
             value={{ value: originCurrency, label: originCurrency }}
+            className={styles.selectOverride}
             onChange={handleOriginCurrencyChange}
             isSearchable={true}
             styles={customStyles}
@@ -133,6 +139,7 @@ const ConverterApp: React.FC = () => {
           <span>to:</span>
           <Select
             value={{ value: destCurrency, label: destCurrency }}
+            className={styles.selectOverride}
             options={currencySymbols}
             styles={customStyles}
             onChange={handleDestCurrencyChange}
@@ -145,8 +152,15 @@ const ConverterApp: React.FC = () => {
             Convert
           </button>
         </div>
-        <div className={cx(styles.conversionResult, conversionResult != null ? '' : styles.hidden)}>
-          Conversion result: {conversionResult}
+        <div>Most popular destination currency: {mostPopularDestCurrency}</div>
+        <div className={styles.conversionResult}>
+          {loading ? (
+            <Loader />
+          ) : (
+            <div className={cx(conversionResult != null ? '' : styles.hidden)}>
+              Conversion result: {conversionResult}
+            </div>
+          )}
         </div>
 
         <ConversionResultsTable conversionEntries={conversionResultsTable} isLoading={isLoading} />
