@@ -6,24 +6,25 @@ export const findMostCommonPropertyValue = <
   arr: T[],
   prop: K
 ): V | null => {
-  const counts: Record<V, number> = {};
+  const counts: Record<string, number> = {};
   let maxCount = 0;
   let maxPropValue: V | null = null;
 
   for (const obj of arr) {
     const propValue = obj[prop];
+    const key = String(propValue); // Convert propValue to string for use as an object key
 
-    if (propValue in counts) {
-      counts[propValue]++;
+    if (key in counts) {
+      counts[key]++;
     } else {
-      counts[propValue] = 1;
+      counts[key] = 1;
     }
   }
 
-  for (const propValue in counts) {
-    if (counts[propValue] > maxCount) {
-      maxCount = counts[propValue];
-      maxPropValue = propValue as V;
+  for (const key in counts) {
+    if (counts[key] > maxCount) {
+      maxCount = counts[key];
+      maxPropValue = key as unknown as V; // Cast key back to type V
     }
   }
 

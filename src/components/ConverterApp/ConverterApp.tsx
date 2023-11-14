@@ -16,21 +16,19 @@ import { findMostCommonPropertyValue } from '../../utils/helpers';
 
 const ConverterApp: React.FC = () => {
   const [currencySymbols, setCurrencySymbols] = useState<CurrencyOption[]>([]);
-  const [amount, setAmount] = useState<number | null>(null);
+  const [amount, setAmount] = useState<string | null>(null);
   const [originCurrency, setOriginCurrency] = useState<string>('');
   const [destCurrency, setDestCurrency] = useState<string>('');
-  const [conversionResult, setConversionResult] = useState<number | null>(null);
+  const [conversionResult, setConversionResult] = useState<string | null>(null);
   const [conversionResultsTable, setConversionResultsTable] = useState<ConversionEntry[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [mostPopularDestCurrency, setMostPopularDestCurrency] = useState<string>('');
 
   const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<any>(null);
 
   const handleAmountChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-    const value = event.target.value;
-    const isValidNumber = /^\d*\.?\d*$/.test(value);
-    setAmount(isValidNumber ? (value === '' ? null : Number(value)) : null);
+    setAmount(event.target.value);
   };
 
   const handleOriginCurrencyChange = (selectedOption: CurrencyOption | null): void => {
@@ -53,18 +51,20 @@ const ConverterApp: React.FC = () => {
         from: originCurrency,
         to: destCurrency
       });
-      const data: ConversionEntry = result.data as ConversionEntry;
+      const data = result.data as ConversionEntry;
       setConversionResult(data.destAmount);
       setAmount(null);
       setOriginCurrency('');
       setDestCurrency('');
-    } catch (error: any) {
+    } catch (error) {
       setError(error);
     } finally {
       setLoading(false);
     }
   };
+
   const fetchCurrencyOptions = async (): Promise<void> => {
+    setIsLoading(true);
     try {
       const result = await fetchCurrencySymbols();
       const options: CurrencyOption[] = (result.data as CurrencySymbolsType[]).map(
@@ -74,8 +74,10 @@ const ConverterApp: React.FC = () => {
         })
       );
       setCurrencySymbols(options);
-    } catch (error: any) {
+    } catch (error) {
       setError(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -83,7 +85,7 @@ const ConverterApp: React.FC = () => {
     try {
       const result = await getAllConversionEntries();
       setConversionResultsTable(result.data as ConversionEntry[]);
-    } catch (error: any) {
+    } catch (error) {
       setError(error);
     }
   };
@@ -97,17 +99,20 @@ const ConverterApp: React.FC = () => {
   }, [conversionResult]);
 
   useEffect(() => {
-    setMostPopularDestCurrency(findMostCommonPropertyValue(conversionResultsTable, 'to'));
+    const mostCommon = findMostCommonPropertyValue(conversionResultsTable, 'to');
+    if (typeof mostCommon === 'string') {
+      setMostPopularDestCurrency(mostCommon);
+    } else {
+      setMostPopularDestCurrency('');
+    }
   }, [conversionResultsTable]);
 
-  // custom styles for react-select
   const customStyles = {
     control: (base: any) => ({
       ...base,
       width: '230px',
       minWidth: 'auto'
     }),
-
     placeholder: (base: any) => ({
       ...base,
       fontSize: '12px',
@@ -117,7 +122,7 @@ const ConverterApp: React.FC = () => {
 
   return (
     <>
-      {error && <ErrorCard error={error} />}
+      {Boolean(error) && <ErrorCard error={error} />}
       <div className={styles.root}>
         <h1 className={styles.mainHeader}>Currency Converter</h1>
         <div className={styles.converterInput}>
@@ -126,7 +131,8 @@ const ConverterApp: React.FC = () => {
             min={0}
             value={amount ?? ''}
             placeholder="insert amount"
-            onChange={handleAmountChange}></input>
+            onChange={handleAmountChange}
+          />
           <span>from:</span>
           <Select
             options={currencySymbols}
@@ -135,7 +141,8 @@ const ConverterApp: React.FC = () => {
             onChange={handleOriginCurrencyChange}
             isSearchable={true}
             styles={customStyles}
-            placeholder={'type/select currency'}></Select>
+            placeholder={'type/select currency'}
+          />
           <span>to:</span>
           <Select
             value={{ value: destCurrency, label: destCurrency }}
@@ -144,11 +151,11 @@ const ConverterApp: React.FC = () => {
             styles={customStyles}
             onChange={handleDestCurrencyChange}
             isSearchable={true}
-            placeholder="type/select currency"></Select>
+            placeholder="type/select currency"
+          />
           <button
             // eslint-disable-next-line @typescript-eslint/no-misused-promises
-            onClick={handleSubmitConversion}
-            disabled={amount == null || originCurrency === '' || destCurrency.length === 0}>
+            onClick={handleSubmitConversion}>
             Convert
           </button>
         </div>
@@ -162,7 +169,6 @@ const ConverterApp: React.FC = () => {
             </div>
           )}
         </div>
-
         <ConversionResultsTable conversionEntries={conversionResultsTable} isLoading={isLoading} />
       </div>
     </>
